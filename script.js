@@ -405,7 +405,7 @@ navBtns.forEach(btn => {
   let currentStep  = 0;
   let nextStepTime = 0;
   let schedulerID  = null;
-  let lastVisStep  = -1;
+  const lastVisSteps = { kick: -1, snare: -1, hihat: -1, tom: -1 };
 
   // Pattern: track → bool[16]
   const pattern = {
@@ -417,6 +417,9 @@ navBtns.forEach(btn => {
 
   // Per-track volume (0–1)
   const volumes = { kick: 0.85, snare: 0.75, hihat: 0.55, tom: 0.75 };
+
+  // Per-track active step count for polymetric sequencing (1–16)
+  const trackLengths = { kick: 16, snare: 16, hihat: 16, tom: 16 };
 
   // Loaded AudioBuffers keyed by kit name then track name
   const sampleBuffers = {
@@ -617,7 +620,7 @@ navBtns.forEach(btn => {
   /* ── Scheduler ───────────────────────────── */
   function fireStep(step, t) {
     TRACKS.forEach(track => {
-      if (pattern[track][step]) fireTrack(track, t, volumes[track]);
+      if (pattern[track][step % trackLengths[track]]) fireTrack(track, t, volumes[track]);
     });
   }
 
@@ -636,24 +639,27 @@ navBtns.forEach(btn => {
 
       // Advance – swing delays odd steps, compensates on even
       nextStepTime += (currentStep % 2 === 0) ? sec16 + swing : sec16 - swing;
-      currentStep = (currentStep + 1) % STEPS;
+      currentStep = (currentStep + 1) % 720720; // LCM(1–16): no track ever resets mid-cycle
     }
   }
 
   /* ── Playhead visual ─────────────────────── */
   function movePlayhead(step) {
-    if (lastVisStep >= 0) {
-      TRACKS.forEach(tr => stepEls[tr][lastVisStep].classList.remove('current'));
-    }
-    TRACKS.forEach(tr => stepEls[tr][step].classList.add('current'));
-    lastVisStep = step;
+    TRACKS.forEach(tr => {
+      const newPos = step % trackLengths[tr];
+      if (lastVisSteps[tr] >= 0) stepEls[tr][lastVisSteps[tr]].classList.remove('current');
+      stepEls[tr][newPos].classList.add('current');
+      lastVisSteps[tr] = newPos;
+    });
   }
 
   function clearPlayhead() {
-    if (lastVisStep >= 0) {
-      TRACKS.forEach(tr => stepEls[tr][lastVisStep].classList.remove('current'));
-      lastVisStep = -1;
-    }
+    TRACKS.forEach(tr => {
+      if (lastVisSteps[tr] >= 0) {
+        stepEls[tr][lastVisSteps[tr]].classList.remove('current');
+        lastVisSteps[tr] = -1;
+      }
+    });
   }
 
   /* ── Start / Stop ────────────────────────── */
@@ -675,10 +681,41 @@ navBtns.forEach(btn => {
     seqToggleBtn.classList.remove('running');
   }
 
+  /* ── Polymetric helpers ──────────────────── */
+  function repositionHandle(track) {
+    const handle = handleEls[track];
+    if (!handle) return;
+    const len     = trackLengths[track];
+    const refBtn  = len < STEPS ? stepEls[track][len] : stepEls[track][STEPS - 1];
+    const parentRect = handle.parentElement.getBoundingClientRect();
+    const btnRect    = refBtn.getBoundingClientRect();
+    const x = len < STEPS
+      ? btnRect.left  - parentRect.left
+      : btnRect.right - parentRect.left;
+    handle.style.left = x + 'px';
+  }
+
+  function stepLenFromX(track, clientX) {
+    for (let i = 0; i < STEPS; i++) {
+      const r   = stepEls[track][i].getBoundingClientRect();
+      const mid = (r.left + r.right) / 2;
+      if (clientX < mid) return Math.max(1, i);
+    }
+    return STEPS;
+  }
+
+  function updateTrackLengthUI(track) {
+    const len = trackLengths[track];
+    stepEls[track].forEach((btn, i) => btn.classList.toggle('out-of-range', i >= len));
+    repositionHandle(track);
+  }
+
   /* ── Build DOM ───────────────────────────── */
   const seqGrid   = document.getElementById('seq-grid');
   const seqRuler  = document.getElementById('seq-ruler');
   const stepEls   = {};
+  const handleEls = {};
+  let   draggingTrack = null;
 
   // Ruler
   for (let g = 0; g < 4; g++) {
@@ -748,9 +785,45 @@ navBtns.forEach(btn => {
       stepsDiv.appendChild(group);
     }
 
+    // Length drag handle
+    const handle = document.createElement('div');
+    handle.className = 'track-length-handle';
+    handle.setAttribute('aria-label', `${track} length handle`);
+    stepsDiv.appendChild(handle);
+    handleEls[track] = handle;
+
+    handle.addEventListener('mousedown', e => {
+      draggingTrack = track;
+      handle.classList.add('dragging');
+      e.preventDefault();
+    });
+
     row.appendChild(stepsDiv);
     seqGrid.appendChild(row);
   });
+
+  // Drag move / release
+  document.addEventListener('mousemove', e => {
+    if (!draggingTrack) return;
+    const newLen = stepLenFromX(draggingTrack, e.clientX);
+    if (newLen !== trackLengths[draggingTrack]) {
+      trackLengths[draggingTrack] = newLen;
+      updateTrackLengthUI(draggingTrack);
+    }
+  });
+
+  document.addEventListener('mouseup', () => {
+    if (draggingTrack) {
+      handleEls[draggingTrack].classList.remove('dragging');
+      draggingTrack = null;
+    }
+  });
+
+  // Reposition handles on resize and whenever the sequencer tab is shown
+  // (section is display:none on load so getBoundingClientRect returns 0)
+  window.addEventListener('resize', () => TRACKS.forEach(repositionHandle));
+  document.querySelector('.nav-btn[data-tab="sequencer"]')
+    .addEventListener('click', () => requestAnimationFrame(() => TRACKS.forEach(repositionHandle)));
 
   /* ── Control wiring ──────────────────────── */
   const seqToggleBtn = document.getElementById('seq-toggle');
@@ -800,7 +873,9 @@ navBtns.forEach(btn => {
   document.getElementById('seq-clear').addEventListener('click', () => {
     TRACKS.forEach(track => {
       pattern[track].fill(false);
-      stepEls[track].forEach(b => b.classList.remove('on'));
+      trackLengths[track] = 16;
+      stepEls[track].forEach(b => b.classList.remove('on', 'out-of-range'));
+      updateTrackLengthUI(track);
     });
   });
 
@@ -836,6 +911,12 @@ navBtns.forEach(btn => {
     // Tom: sparse accent, avoid downbeats
     [2, 3, 6, 7, 10, 11, 14, 15].forEach(s => {
       if (Math.random() > 0.84) pattern.tom[s] = true;
+    });
+
+    // Randomize track lengths for polymetric variation (4–16 steps)
+    TRACKS.forEach(track => {
+      trackLengths[track] = 4 + Math.floor(Math.random() * 13);
+      updateTrackLengthUI(track);
     });
 
     // Sync UI
