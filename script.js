@@ -383,7 +383,18 @@ navBtns.forEach(btn => {
       hihat: '808 Kit/CH A 808 Tape.wav',
       tom:   '808 Kit/Tom Mid A 808 08.wav',
     },
-    // 909 and linn use synthesis (no sample files yet)
+    '909': {
+      kick:  '909 Kit/Reverb Roland TR-909 Sample Pack_Kick Accent Mid Tone Min Attack Mjn Decay.wav',
+      snare: '909 Kit/Reverb Roland TR-909 Sample Pack_Snare Accent Mid Tuning Mid Tone Mid Snap.wav',
+      hihat: '909 Kit/Reverb Roland TR-909 Sample Pack_Hat Closed Mid Decay.wav',
+      tom:   '909 Kit/Reverb Roland TR-909 Sample Pack_Tom Mid Mid Tune Mid Decay.wav',
+    },
+    'linn': {
+      kick:  'Linn Kit/Reverb LinnDrum Sample Pack_Kick Hard.wav',
+      snare: 'Linn Kit/Reverb LinnDrum Sample Pack_Snare Hard.wav',
+      hihat: 'Linn Kit/Reverb LinnDrum Sample Pack_Hat Close.wav',
+      tom:   'Linn Kit/Reverb LinnDrum Sample Pack_Tom1.wav',
+    },
   };
 
   /* ── State ──────────────────────────────── */
@@ -408,7 +419,11 @@ navBtns.forEach(btn => {
   const volumes = { kick: 0.85, snare: 0.75, hihat: 0.55, tom: 0.75 };
 
   // Loaded AudioBuffers keyed by kit name then track name
-  const sampleBuffers = { '808': { kick: null, snare: null, hihat: null, tom: null } };
+  const sampleBuffers = {
+    '808':  { kick: null, snare: null, hihat: null, tom: null },
+    '909':  { kick: null, snare: null, hihat: null, tom: null },
+    'linn': { kick: null, snare: null, hihat: null, tom: null },
+  };
 
   /* ── Audio context ───────────────────────── */
   const audioCtx  = new (window.AudioContext || /** @type {any} */(window).webkitAudioContext)();
@@ -836,13 +851,14 @@ navBtns.forEach(btn => {
     }
   });
 
-  // Pre-load 808 kit; also re-load when the user switches to 808
-  loadKit('808');
+  // Pre-load the default kit (909); lazy-load others on first switch
+  loadKit('909');
 
   document.querySelectorAll('.machine-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      if (btn.dataset.machine === '808' && !sampleBuffers['808'].kick) {
-        loadKit('808');
+      const kit = btn.dataset.machine;
+      if (SAMPLE_MAP[kit] && !sampleBuffers[kit].kick) {
+        loadKit(kit);
       }
     });
   });
