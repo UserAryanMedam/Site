@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aryan Medam</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <div class="site-title">
+        <h1>ARYAN MEDAM</h1>
+        <p class="site-subtitle">Filmmaker &amp; Composer</p>
+      </div>
+      <nav>
+        <button class="nav-btn active" data-tab="short-films">Short Films</button>
+        <button class="nav-btn" data-tab="film-scores">Film Scores</button>
+        <button class="nav-btn" data-tab="about">About</button>
+        <button class="nav-btn" data-tab="metronome">Metronome</button>
+        <button class="nav-btn" data-tab="tuner">Tuner</button>
+        <button class="nav-btn" data-tab="sequencer">Sequencer</button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- SHORT FILMS -->
+    <section id="short-films" class="tab-section active">
+      <div class="section-header">
+        <h2>Short Films</h2>
+        <p class="section-desc">A collection of cinematic works exploring story, sound, and image.</p>
+      </div>
+      <div class="films-grid">
+        <div class="film-card placeholder-card">
+          <div class="film-thumb">
+            <div class="thumb-placeholder">
+              <span class="play-icon">&#9654;</span>
+            </div>
+          </div>
+          <div class="film-info">
+            <h3 class="film-title">Film Title</h3>
+            <p class="film-meta">2024 &middot; 12 min</p>
+            <p class="film-desc">A brief description of this short film and what it explores thematically.</p>
+          </div>
+        </div>
+        <div class="film-card placeholder-card">
+          <div class="film-thumb">
+            <div class="thumb-placeholder">
+              <span class="play-icon">&#9654;</span>
+            </div>
+          </div>
+          <div class="film-info">
+            <h3 class="film-title">Film Title</h3>
+            <p class="film-meta">2023 &middot; 8 min</p>
+            <p class="film-desc">A brief description of this short film and what it explores thematically.</p>
+          </div>
+        </div>
+        <div class="film-card placeholder-card">
+          <div class="film-thumb">
+            <div class="thumb-placeholder">
+              <span class="play-icon">&#9654;</span>
+            </div>
+          </div>
+          <div class="film-info">
+            <h3 class="film-title">Film Title</h3>
+            <p class="film-meta">2023 &middot; 15 min</p>
+            <p class="film-desc">A brief description of this short film and what it explores thematically.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FILM SCORES -->
+    <section id="film-scores" class="tab-section">
+      <div class="section-header">
+        <h2>Film Scores</h2>
+        <p class="section-desc">Original music composed for film and other moving image.</p>
+      </div>
+      <div class="scores-list">
+        <div class="score-item placeholder-card">
+          <div class="score-waveform">
+            <div class="waveform-bars">
+              <span></span><span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span><span></span>
+            </div>
+          </div>
+          <div class="score-info">
+            <h3>Score Title</h3>
+            <p class="score-meta">Film &middot; 2024</p>
+            <p class="score-desc">Orchestral score for a dramatic short exploring themes of memory and loss.</p>
+          </div>
+          <button class="play-btn" aria-label="Play">&#9654;</button>
+        </div>
+        <div class="score-item placeholder-card">
+          <div class="score-waveform">
+            <div class="waveform-bars">
+              <span></span><span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span><span></span>
+            </div>
+          </div>
+          <div class="score-info">
+            <h3>Score Title</h3>
+            <p class="score-meta">Documentary &middot; 2023</p>
+            <p class="score-desc">Minimalist piano and strings for a documentary about urban isolation.</p>
+          </div>
+          <button class="play-btn" aria-label="Play">&#9654;</button>
+        </div>
+        <div class="score-item placeholder-card">
+          <div class="score-waveform">
+            <div class="waveform-bars">
+              <span></span><span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span><span></span>
+            </div>
+          </div>
+          <div class="score-info">
+            <h3>Score Title</h3>
+            <p class="score-meta">Short Film &middot; 2023</p>
+            <p class="score-desc">Experimental electronic score blending synthesizers and field recordings.</p>
+          </div>
+          <button class="play-btn" aria-label="Play">&#9654;</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about" class="tab-section">
+      <div class="about-layout">
+        <div class="about-photo">
+          <div class="photo-placeholder">AM</div>
+        </div>
+        <div class="about-text">
+          <h2>About</h2>
+          <p>
+            Hi, I'm Aryan Medam — a filmmaker and composer passionate about the intersection
+            of image and sound. My work explores how music shapes cinematic experience, and
+            how visuals can carry emotional weight beyond words.
+          </p>
+          <p>
+            I write, direct, and score my own short films, drawing influence from composers
+            like Ennio Morricone, Jonny Greenwood, and Ryuichi Sakamoto, and filmmakers
+            like Andrei Tarkovsky and Wong Kar-wai.
+          </p>
+          <p>
+            When I'm not on set or at the piano, I'm building tools that bring music and
+            technology together — including the metronome and tuner on this site.
+          </p>
+          <div class="contact-links">
+            <a href="mailto:aryan@example.com" class="contact-btn">Email</a>
+            <a href="#" class="contact-btn">Instagram</a>
+            <a href="#" class="contact-btn">Vimeo</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- METRONOME -->
+    <section id="metronome" class="tab-section">
+      <div class="tool-container">
+        <h2>Metronome</h2>
+
+        <div class="bpm-display">
+          <button id="bpm-down" class="bpm-arrow" aria-label="Decrease BPM">&#8722;</button>
+          <div class="bpm-value-wrap">
+            <span id="bpm-value">120</span>
+            <span class="bpm-label">BPM</span>
+          </div>
+          <button id="bpm-up" class="bpm-arrow" aria-label="Increase BPM">&#43;</button>
+        </div>
+
+        <input type="range" id="bpm-slider" min="20" max="300" value="120" />
+
+        <div class="beat-row">
+          <div class="beat-dot" id="beat-dot-0"></div>
+          <div class="beat-dot" id="beat-dot-1"></div>
+          <div class="beat-dot" id="beat-dot-2"></div>
+          <div class="beat-dot" id="beat-dot-3"></div>
+        </div>
+
+        <div class="time-sig-row">
+          <span class="ts-label">Time Signature</span>
+          <div class="ts-buttons">
+            <button class="ts-btn active" data-beats="4">4/4</button>
+            <button class="ts-btn" data-beats="3">3/4</button>
+            <button class="ts-btn" data-beats="2">2/4</button>
+            <button class="ts-btn" data-beats="6">6/8</button>
+          </div>
+        </div>
+
+        <div class="subdivision-row">
+          <span class="ts-label">Subdivision</span>
+          <div class="ts-buttons">
+            <button class="sub-btn active" data-sub="1">&#9834;</button>
+            <button class="sub-btn" data-sub="2">&#9834;&#9834;</button>
+            <button class="sub-btn" data-sub="3">&#9834;&#9834;&#9834;</button>
+          </div>
+        </div>
+
+        <button id="metro-toggle" class="tool-btn">Start</button>
+
+        <div class="tap-row">
+          <button id="tap-btn" class="tap-btn">Tap Tempo</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- TUNER -->
+    <section id="tuner" class="tab-section">
+      <div class="tool-container">
+        <h2>Tuner</h2>
+        <p class="tool-hint">Allow microphone access, then play a note.</p>
+
+        <div class="tuner-display">
+          <div class="note-name" id="tuner-note">--</div>
+          <div class="octave-label" id="tuner-octave"></div>
+          <div class="cents-display">
+            <span id="tuner-cents">0</span>
+            <span class="cents-unit">cents</span>
+          </div>
+        </div>
+
+        <div class="needle-wrap">
+          <div class="needle-track">
+            <div class="needle-center-mark"></div>
+            <div class="needle" id="tuner-needle"></div>
+          </div>
+          <div class="needle-labels">
+            <span>&#8722;50</span>
+            <span>0</span>
+            <span>+50</span>
+          </div>
+        </div>
+
+        <div class="tuner-status" id="tuner-status">--</div>
+
+        <button id="tuner-toggle" class="tool-btn">Start Tuner</button>
+
+        <div class="ref-row">
+          <label for="ref-pitch">Reference A4:</label>
+          <input type="number" id="ref-pitch" value="440" min="400" max="480" step="1" />
+          <span>Hz</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEQUENCER -->
+    <section id="sequencer" class="tab-section">
+      <div class="seq-header">
+        <h2>Drum Sequencer</h2>
+        <div class="seq-top-controls">
+
+          <div class="machine-select">
+            <button class="machine-btn active" data-machine="909">909</button>
+            <button class="machine-btn" data-machine="808">808</button>
+            <button class="machine-btn" data-machine="linn">Linn</button>
+          </div>
+
+          <div class="seq-bpm-block">
+            <button class="seq-bpm-btn" id="seq-bpm-down">&#8722;</button>
+            <div class="seq-bpm-display">
+              <span id="seq-bpm-value">120</span>
+              <span class="seq-bpm-label">BPM</span>
+            </div>
+            <button class="seq-bpm-btn" id="seq-bpm-up">&#43;</button>
+          </div>
+
+          <div class="swing-block">
+            <label class="swing-label">Swing</label>
+            <input type="range" id="seq-swing" min="0" max="75" value="0" />
+            <span id="seq-swing-val">0%</span>
+          </div>
+
+          <button id="seq-toggle" class="tool-btn seq-play-btn">Play</button>
+        </div>
+      </div>
+
+      <p class="seq-status" id="seq-status"></p>
+      <div class="seq-ruler" id="seq-ruler"></div>
+      <div class="seq-grid"  id="seq-grid"></div>
+
+      <div class="seq-footer">
+        <button class="seq-clear-btn" id="seq-clear">Clear All</button>
+        <button class="seq-rand-btn"  id="seq-randomize">Randomize</button>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>&copy; <span id="year"></span> Aryan Medam. All rights reserved.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
