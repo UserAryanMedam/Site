@@ -495,7 +495,7 @@ navBtns.forEach(btn => {
     const src  = audioCtx.createBufferSource();
     src.buffer = buf;
     const gain = audioCtx.createGain();
-    gain.gain.setValueAtTime(vol, t);
+    gain.gain.value = vol;
     src.connect(gain);
     gain.connect(masterOut);
     src.start(t);
@@ -595,18 +595,22 @@ navBtns.forEach(btn => {
     osc.start(t); osc.stop(t + P.decay + 0.06);
   }
 
+  // Per-kit volume multipliers to roughly balance levels (since some kits have louder samples than others)
+  const KIT_GAIN = { '808': 0.4, '909': 2.6, 'linn': 0.3 };
+
   /* ── Dispatch: sample if available, else synth ── */
   function fireTrack(track, t, vol) {
+    const scaledVol = vol * (KIT_GAIN[machine] ?? 1.0);
     const buf = sampleBuffers[machine] && sampleBuffers[machine][track];
     if (buf) {
-      playSample(buf, t, vol);
+      playSample(buf, t, scaledVol);
       return;
     }
     switch (track) {
-      case 'kick':  playKick(t, vol);  break;
-      case 'snare': playSnare(t, vol); break;
-      case 'hihat': playHihat(t, vol); break;
-      case 'tom':   playTom(t, vol);   break;
+      case 'kick':  playKick(t, scaledVol);  break;
+      case 'snare': playSnare(t, scaledVol); break;
+      case 'hihat': playHihat(t, scaledVol); break;
+      case 'tom':   playTom(t, scaledVol);   break;
     }
   }
 
