@@ -982,6 +982,7 @@ footer {
   display: flex;
   gap: 8px;
   flex: 1;
+  position: relative;
 }
 
 .step-group {
@@ -1008,6 +1009,43 @@ footer {
   background: var(--tc);
   border-color: var(--tc);
   box-shadow: 0 0 7px var(--tc);
+}
+
+/* Out-of-range steps (beyond track length) */
+.step-btn.out-of-range {
+  opacity: 0.15;
+  pointer-events: none;
+}
+
+/* Per-track length drag handle */
+.track-length-handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 14px;
+  cursor: col-resize;
+  transform: translateX(-50%);
+  z-index: 5;
+}
+
+.track-length-handle::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  transform: translateX(-50%);
+  background: var(--accent2);
+  border-radius: 2px;
+  opacity: 0.6;
+  transition: opacity 0.12s, background 0.12s;
+}
+
+.track-length-handle:hover::before,
+.track-length-handle.dragging::before {
+  opacity: 1;
+  background: var(--accent);
 }
 
 /* Playhead: bright white ring */
