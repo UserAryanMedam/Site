@@ -247,8 +247,13 @@ main {
   width: 4px;
   border-radius: 2px;
   background: var(--accent2);
-  opacity: 0.5;
+  opacity: 0.35;
+  animation: none;
+}
+
+.score-item.playing .waveform-bars span {
   animation: wave 1.2s ease-in-out infinite;
+  opacity: 0.7;
 }
 
 .waveform-bars span:nth-child(1)  { height: 40%; animation-delay: 0s; }
@@ -279,7 +284,63 @@ main {
   font-size: 0.75rem;
   color: var(--accent2);
   letter-spacing: 0.1em;
-  margin-bottom: 6px;
+  margin-bottom: 10px;
+}
+
+.score-progress-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.score-time,
+.score-duration {
+  font-size: 0.68rem;
+  color: var(--muted);
+  min-width: 30px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+}
+
+.score-duration { text-align: right; }
+
+.score-progress-bar {
+  flex: 1;
+  height: 3px;
+  background: var(--border);
+  border-radius: 2px;
+  cursor: pointer;
+  position: relative;
+}
+
+.score-progress-bar:hover { background: var(--surface2); }
+
+.score-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--accent2);
+  border-radius: 2px;
+  pointer-events: none;
+  position: relative;
+}
+
+.score-progress-fill::after {
+  content: '';
+  position: absolute;
+  right: -5px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent2);
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+
+.score-item:hover .score-progress-fill::after,
+.score-item.playing .score-progress-fill::after {
+  opacity: 1;
 }
 
 .score-desc { font-size: 0.83rem; color: var(--muted); }
@@ -819,8 +880,23 @@ footer {
   font-size: 1.6rem;
   font-weight: 200;
   color: var(--text);
-  min-width: 48px;
+  width: 56px;
   text-align: center;
+  background: none;
+  border: none;
+  outline: none;
+  font-family: var(--font-sans);
+  -moz-appearance: textfield;
+  cursor: text;
+}
+
+#seq-bpm-value::-webkit-outer-spin-button,
+#seq-bpm-value::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+#seq-bpm-value:focus {
+  border-bottom: 1px solid var(--border);
 }
 
 .seq-bpm-label {

@@ -11,6 +11,13 @@
 document.getElementById('year').textContent = new Date().getFullYear();
 
 // ─────────────────────────────────────────
+// TAB STOP REGISTRY
+// Each section registers a stop fn here so
+// navigating away silences it automatically.
+// ─────────────────────────────────────────
+const tabStop = {};
+
+// ─────────────────────────────────────────
 // TAB NAVIGATION
 // ─────────────────────────────────────────
 const navBtns = document.querySelectorAll('.nav-btn');
@@ -18,11 +25,12 @@ const sections = document.querySelectorAll('.tab-section');
 
 navBtns.forEach(btn => {
   btn.addEventListener('click', () => {
-    const target = btn.dataset.tab;
+    const leaving = document.querySelector('.nav-btn.active')?.dataset.tab;
+    if (leaving && tabStop[leaving]) tabStop[leaving]();
 
+    const target = btn.dataset.tab;
     navBtns.forEach(b => b.classList.remove('active'));
     sections.forEach(s => s.classList.remove('active'));
-
     btn.classList.add('active');
     document.getElementById(target).classList.add('active');
   });
@@ -197,6 +205,7 @@ navBtns.forEach(btn => {
     }
   });
 
+  tabStop['metronome'] = stopMetronome;
   updateDots();
 })();
 
@@ -362,6 +371,7 @@ navBtns.forEach(btn => {
   }
 
   toggleBtn.addEventListener('click', () => isRunning ? stopTuner() : startTuner());
+  tabStop['tuner'] = stopTuner;
 })();
 
 // ─────────────────────────────────────────
@@ -398,7 +408,7 @@ navBtns.forEach(btn => {
   };
 
   /* ── State ──────────────────────────────── */
-  let machine      = '909';
+  let machine      = '808';
   let bpm          = 120;
   let swingPercent = 0;
   let isRunning    = false;
@@ -832,11 +842,18 @@ navBtns.forEach(btn => {
   // BPM
   const seqBpmEl = document.getElementById('seq-bpm-value');
   function setSeqBPM(val) {
-    bpm = Math.min(300, Math.max(20, Math.round(val)));
-    seqBpmEl.textContent = bpm;
+    bpm = Math.min(300, Math.max(40, Math.round(val)));
+    seqBpmEl.value = bpm;
   }
   document.getElementById('seq-bpm-down').addEventListener('click', () => setSeqBPM(bpm - 1));
   document.getElementById('seq-bpm-up').addEventListener('click',   () => setSeqBPM(bpm + 1));
+  seqBpmEl.addEventListener('change', () => {
+    const v = parseInt(seqBpmEl.value, 10);
+    setSeqBPM(isFinite(v) ? v : bpm);
+  });
+  seqBpmEl.addEventListener('keydown', e => {
+    if (e.key === 'Enter') seqBpmEl.blur();
+  });
 
   // BPM held-down repeat
   function holdRepeat(el, fn) {
@@ -936,16 +953,130 @@ navBtns.forEach(btn => {
     }
   });
 
-  // Pre-load the default kit (909); lazy-load others on first switch
-  loadKit('909');
+  // Pre-load the default kit (808); lazy-load others on first switch
+  loadKit('808');
 
   document.querySelectorAll('.machine-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const kit = btn.dataset.machine;
+      machine = kit;
+      document.querySelectorAll('.machine-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
       if (SAMPLE_MAP[kit] && !sampleBuffers[kit].kick) {
         loadKit(kit);
       }
     });
   });
 
+  tabStop['sequencer'] = stopSeq;
+})();
+
+// ─────────────────────────────────────────
+// FILM SCORES PLAYER
+// ─────────────────────────────────────────
+(function ScoresPlayer() {
+  let currentAudio = null;
+  let currentItem  = null;
+
+  function fmt(s) {
+    if (!isFinite(s)) return '--:--';
+    const m = Math.floor(s / 60);
+    const sec = String(Math.floor(s % 60)).padStart(2, '0');
+    return m + ':' + sec;
+  }
+
+  function resetItem(item) {
+    item.querySelector('.play-btn').innerHTML = '&#9654;';
+    item.querySelector('.score-progress-fill').style.width = '0%';
+    item.querySelector('.score-time').textContent = '0:00';
+    item.classList.remove('playing');
+  }
+
+  document.querySelectorAll('.score-item').forEach(item => {
+    const btn      = item.querySelector('.play-btn');
+    const fill     = item.querySelector('.score-progress-fill');
+    const timeEl   = item.querySelector('.score-time');
+    const durEl    = item.querySelector('.score-duration');
+    const bar      = item.querySelector('.score-progress-bar');
+    const src      = item.dataset.src;
+    if (!src) return;
+
+    // Pre-load duration without full download
+    const probe = new Audio(src);
+    probe.preload = 'metadata';
+    probe.addEventListener('loadedmetadata', () => {
+      durEl.textContent = fmt(probe.duration);
+    });
+
+    btn.addEventListener('click', () => {
+      // Pause current track
+      if (currentItem === item && currentAudio && !currentAudio.paused) {
+        currentAudio.pause();
+        btn.innerHTML = '&#9654;';
+        item.classList.remove('playing');
+        return;
+      }
+
+      // Stop and reset any other playing track
+      if (currentAudio && !currentAudio.paused) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+      }
+      if (currentItem && currentItem !== item) {
+        resetItem(currentItem);
+      }
+
+      // Resume paused or start fresh
+      if (currentItem === item && currentAudio) {
+        currentAudio.play();
+      } else {
+        currentAudio = new Audio(src);
+        currentAudio.preload = 'auto';
+
+        currentAudio.addEventListener('loadedmetadata', () => {
+          durEl.textContent = fmt(currentAudio.duration);
+        });
+
+        currentAudio.addEventListener('timeupdate', () => {
+          const pct = currentAudio.duration
+            ? (currentAudio.currentTime / currentAudio.duration) * 100
+            : 0;
+          fill.style.width = pct + '%';
+          timeEl.textContent = fmt(currentAudio.currentTime);
+        });
+
+        currentAudio.addEventListener('ended', () => {
+          resetItem(item);
+          currentItem = null;
+        });
+
+        currentAudio.play();
+        currentItem = item;
+      }
+
+      btn.innerHTML = '&#9646;&#9646;';
+      item.classList.add('playing');
+    });
+
+    // Click-to-seek
+    bar.addEventListener('click', e => {
+      if (!currentAudio || currentItem !== item) return;
+      const rect = bar.getBoundingClientRect();
+      const pct  = (e.clientX - rect.left) / rect.width;
+      currentAudio.currentTime = pct * currentAudio.duration;
+    });
+  });
+
+  function stopScores() {
+    if (currentAudio && !currentAudio.paused) {
+      currentAudio.pause();
+      currentAudio.currentTime = 0;
+    }
+    if (currentItem) {
+      resetItem(currentItem);
+      currentItem = null;
+    }
+  }
+
+  tabStop['film-scores'] = stopScores;
 })();

@@ -61,7 +61,7 @@
         <p class="section-desc">Original music written for various short films and multimedia projects.</p>
       </div>
       <div class="scores-list">
-        <div class="score-item placeholder-card">
+        <div class="score-item" data-src="Music For Site/So Help Me.mp3">
           <div class="score-waveform">
             <div class="waveform-bars">
               <span></span><span></span><span></span><span></span><span></span>
@@ -70,13 +70,17 @@
             </div>
           </div>
           <div class="score-info">
-            <h3>Score Title</h3>
-            <p class="score-meta">Film &middot; 2024</p>
-            <p class="score-desc">Orchestral score for a dramatic short exploring themes of memory and loss.</p>
+            <h3>So Help Me</h3>
+            <p class="score-meta">Short Film</p>
+            <div class="score-progress-row">
+              <span class="score-time">0:00</span>
+              <div class="score-progress-bar"><div class="score-progress-fill"></div></div>
+              <span class="score-duration">--:--</span>
+            </div>
           </div>
           <button class="play-btn" aria-label="Play">&#9654;</button>
         </div>
-        <div class="score-item placeholder-card">
+        <div class="score-item" data-src="Music For Site/Breathe.mp3">
           <div class="score-waveform">
             <div class="waveform-bars">
               <span></span><span></span><span></span><span></span><span></span>
@@ -85,13 +89,17 @@
             </div>
           </div>
           <div class="score-info">
-            <h3>Score Title</h3>
-            <p class="score-meta">Documentary &middot; 2023</p>
-            <p class="score-desc">Minimalist piano and strings for a documentary about urban isolation.</p>
+            <h3>Breathe</h3>
+            <p class="score-meta">Score</p>
+            <div class="score-progress-row">
+              <span class="score-time">0:00</span>
+              <div class="score-progress-bar"><div class="score-progress-fill"></div></div>
+              <span class="score-duration">--:--</span>
+            </div>
           </div>
           <button class="play-btn" aria-label="Play">&#9654;</button>
         </div>
-        <div class="score-item placeholder-card">
+        <div class="score-item" data-src="Music For Site/Crosswalk.mp3">
           <div class="score-waveform">
             <div class="waveform-bars">
               <span></span><span></span><span></span><span></span><span></span>
@@ -100,9 +108,32 @@
             </div>
           </div>
           <div class="score-info">
-            <h3>Score Title</h3>
-            <p class="score-meta">Short Film &middot; 2023</p>
-            <p class="score-desc">Experimental electronic score blending synthesizers and field recordings.</p>
+            <h3>Crosswalk</h3>
+            <p class="score-meta">Score</p>
+            <div class="score-progress-row">
+              <span class="score-time">0:00</span>
+              <div class="score-progress-bar"><div class="score-progress-fill"></div></div>
+              <span class="score-duration">--:--</span>
+            </div>
+          </div>
+          <button class="play-btn" aria-label="Play">&#9654;</button>
+        </div>
+        <div class="score-item" data-src="Music For Site/Life Am I RIght_.mp3">
+          <div class="score-waveform">
+            <div class="waveform-bars">
+              <span></span><span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span><span></span>
+            </div>
+          </div>
+          <div class="score-info">
+            <h3>Life, Am I Right?</h3>
+            <p class="score-meta">Score</p>
+            <div class="score-progress-row">
+              <span class="score-time">0:00</span>
+              <div class="score-progress-bar"><div class="score-progress-fill"></div></div>
+              <span class="score-duration">--:--</span>
+            </div>
           </div>
           <button class="play-btn" aria-label="Play">&#9654;</button>
         </div>
@@ -236,15 +267,15 @@
         <div class="seq-top-controls">
 
           <div class="machine-select">
-            <button class="machine-btn active" data-machine="909">909</button>
-            <button class="machine-btn" data-machine="808">808</button>
+            <button class="machine-btn active" data-machine="808">808</button>
+            <button class="machine-btn" data-machine="909">909</button>
             <button class="machine-btn" data-machine="linn">Linn</button>
           </div>
 
           <div class="seq-bpm-block">
             <button class="seq-bpm-btn" id="seq-bpm-down">&#8722;</button>
             <div class="seq-bpm-display">
-              <span id="seq-bpm-value">120</span>
+              <input type="number" id="seq-bpm-value" value="120" min="40" max="300" />
               <span class="seq-bpm-label">BPM</span>
             </div>
             <button class="seq-bpm-btn" id="seq-bpm-up">&#43;</button>
